@@ -7,13 +7,64 @@ import pytest
 
 @pytest.fixture
 def valid_owner():
-    return User(
+    return User.create(
         user_id=1234,
         email="someone@gmail.com",
         fullname="someone"
     )
 
 
+# test CreateTaskRequest
+def test__create_task_request__pass_valid_values__request_created():
+    create_request = CreateTaskRequest.create(
+        title="some task",
+        owner_id=1234,
+        details="some details about the task",
+        story_points=5
+    )
+
+    assert create_request.status == Status.SUCCESS
+    assert create_request.data.title == "some task"
+    assert create_request.data.owner_id == 1234
+    assert create_request.data.details == "some details about the task"
+    assert create_request.data.story_points == 5
+
+
+def test__create_task_request__pass_no_title__return_failure():
+    create_request = CreateTaskRequest.create(
+        owner_id=1234,
+        details="some details about the task",
+        story_points=5
+    )
+
+    assert create_request.status == Status.FAILURE
+    assert create_request.error == "title is required."
+
+
+def test__create_task_request__pass_empty_title__return_failure():
+    create_request = CreateTaskRequest.create(
+        title="",
+        owner_id=1234,
+        details="some details about the task",
+        story_points=5
+    )
+
+    assert create_request.status == Status.FAILURE
+    assert create_request.error == "title is required."
+
+
+def test__create_task_request__pass_no_owner_id__return_failure():
+    create_request = CreateTaskRequest.create(
+        title="something",
+        details="some details about the task",
+        story_points=5
+    )
+
+    assert create_request.status == Status.FAILURE
+    assert create_request.error == "owner_id is required."
+
+
+# test CreateTaskUseCase
 def test__create_task_use_case__passing_valid_values__task_created(valid_owner):
     user_repo = mock.Mock()
     user_repo.get_by_id.return_value = valid_owner
@@ -36,7 +87,7 @@ def test__create_task_use_case__passing_valid_values__task_created(valid_owner):
     assert response.data.task_id == 4000
 
 
-def test__create_task__invalid_owner_id__returns_failure_result():
+def test__create_task_use_case__invalid_owner_id__returns_failure_result():
     user_repo = mock.Mock()
     user_repo.get_by_id.return_value = None
     task_repo = mock.Mock()
