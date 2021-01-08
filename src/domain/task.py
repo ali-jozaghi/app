@@ -12,15 +12,29 @@ class Task:
     created_at: datetime
     story_points: int
 
-    @classmethod
-    def create(cls, **kwargs):
-        if "task_id" not in kwargs:
-            kwargs["task_id"] = 0
+    def is_new(self):
+        return self.task_id == 0
 
-        if kwargs["owner"] is None:
+    @classmethod
+    def create(cls,
+               title: str,
+               details: str,
+               owner: User,
+               story_points: int,
+               task_id: int = 0,
+               created_at: datetime = datetime.utcnow()):
+
+        if owner is None:
             return Result.failure("owner is required.")
 
-        task = cls(**kwargs)
+        task = cls(
+            title=title,
+            details=details,
+            owner=owner,
+            story_points=story_points,
+            task_id=task_id,
+            created_at=created_at
+        )
         return Result.success(task)
 
 
