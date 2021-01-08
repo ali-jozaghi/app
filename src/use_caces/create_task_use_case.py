@@ -4,7 +4,7 @@ from src.common.result import Result
 from src.domain.task import Task
 from datetime import datetime
 from dataclasses import dataclass
-from src.common.validators import is_empty_or_none_string, is_not_int
+from src.common.validators import empty_or_none_string, not_int
 
 
 @dataclass
@@ -16,13 +16,13 @@ class CreateTaskRequest:
 
     @classmethod
     def create(cls, **kwargs):
-        if "title" not in kwargs or is_empty_or_none_string(kwargs["title"]):
+        if "title" not in kwargs or empty_or_none_string(kwargs["title"]):
             return Result.failure("title is required.")
 
-        if "owner_id" not in kwargs or is_not_int(kwargs["owner_id"]):
+        if "owner_id" not in kwargs or not_int(kwargs["owner_id"]):
             return Result.failure("owner_id is required.")
 
-        if "story_points" not in kwargs or is_not_int(kwargs["story_points"]):
+        if "story_points" not in kwargs or not_int(kwargs["story_points"]):
             return Result.failure("story_points is required.")
 
         request = cls(**kwargs)

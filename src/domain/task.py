@@ -3,7 +3,6 @@ from src.domain.user import User
 from src.common.result import Result
 from dataclasses import dataclass
 
-
 @dataclass
 class Task:
     task_id: int
