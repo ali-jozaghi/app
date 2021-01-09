@@ -1,1 +1,1 @@
-# app
+# application template using clean architecture
