@@ -3,11 +3,12 @@ from sqlalchemy import insert, select
 from src.domain.user import User
 from src.common.result import Result
 from src.repository.database import users
+from src.repository.base_repository import BaseRepository
 
 
-class UserRepository:
+class UserRepository(BaseRepository):
     def __init__(self, connection):
-        self._connection = connection
+        super().__init__(connection)
 
     def _insert(self, user: User) -> Result[int]:
         insert_command = insert(users).values(
@@ -26,10 +27,8 @@ class UserRepository:
         else:
             return self._update(user)
 
-    def get_by_id(self, user_id: int) -> User:
-        query = select([users]).where(users.c.user_id == user_id)
-        result = self._connection.execute(query)
-        result = result.first()
+    def _get_user(self, query) -> User:
+        result = self.select_one(users, query)
         if not result:
             return None
         return User(
@@ -37,3 +36,9 @@ class UserRepository:
             email=result.email,
             fullname=result.fullname
         )
+
+    def get_by_id(self, user_id: int) -> User:
+        return self._get_user(users.c.user_id == user_id)
+
+    def get_by_email(self, email: str) -> User:
+        return self._get_user(users.c.email == email)

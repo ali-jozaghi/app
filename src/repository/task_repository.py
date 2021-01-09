@@ -1,14 +1,14 @@
 from src.common.result import Result
 from src.domain.task import Task
-from src.repository.database import tasks
+from src.domain.user import User
+from src.repository.database import tasks, users
 from sqlalchemy import insert, select
-from src.repository.user_repository import UserRepository
+from src.repository.base_repository import BaseRepository
 
 
-class TaskRepository:
+class TaskRepository(BaseRepository):
     def __init__(self, connection):
-        self._connection = connection
-        self._user_repository = UserRepository(connection)
+        super().__init__(connection)
 
     def create(self, task: Task) -> Result[int]:
         insert_command = insert(tasks).values(
@@ -22,7 +22,7 @@ class TaskRepository:
         return Result.success(result.inserted_primary_key[0])
 
     def update(self, task: Task) -> Result[int]:
-        pass
+        raise NotImplementedError()
 
     def save(self, task: Task) -> Result[int]:
         if task.is_new():
@@ -39,7 +39,13 @@ class TaskRepository:
 
         owner = None
         if eager_loading:
-            owner = self._user_repository.get_by_id(result.owner_id)
+            get_owner_result = self.select_one(users, users.c.user_id == result.owner_id)
+            if get_owner_result:
+                owner = User(
+                    user_id=get_owner_result.user_id,
+                    email=get_owner_result.email,
+                    fullname=get_owner_result.fullname
+                )
 
         return Task(
             title=result.title,
