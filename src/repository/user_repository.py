@@ -1,4 +1,4 @@
-from sqlalchemy import insert, select
+from sqlalchemy import insert
 
 from src.domain.user import User
 from src.common.result import Result
@@ -19,7 +19,7 @@ class UserRepository(BaseRepository):
         return Result.success(result.inserted_primary_key[0])
 
     def _update(self, user: User) -> Result[int]:
-        pass
+        raise NotImplementedError()
 
     def save(self, user: User) -> Result[int]:
         if user.is_new():

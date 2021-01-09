@@ -2,11 +2,11 @@ from pydantic import BaseSettings
 
 
 class Setting(BaseSettings):
-    database_username: str = ''
-    database_password: str = ''
-    database_url: str = ''
-    database_name: str = 'app_db'
-    database_port: int = 0
+    database_username: str = 'postgres'
+    database_password: str = 'password'
+    database_host: str = 'localhost'
+    database_name: str = 'postgres'
+    database_port: int = 5432
 
 
 setting = Setting()
