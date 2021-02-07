@@ -32,6 +32,7 @@ def test__create_task_request__pass_valid_values__request_created():
 
 def test__create_task_request__pass_no_title__return_failure():
     create_request = CreateTaskRequest.create(
+        title=None,
         owner_id=1234,
         details="some details about the task",
         story_points=5
@@ -57,7 +58,8 @@ def test__create_task_request__pass_no_owner_id__return_failure():
     create_request = CreateTaskRequest.create(
         title="something",
         details="some details about the task",
-        story_points=5
+        story_points=5,
+        owner_id=None
     )
 
     assert create_request.status == Status.FAILURE

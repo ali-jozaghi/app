@@ -42,3 +42,5 @@ class UserRepository(BaseRepository):
 
     def get_by_email(self, email: str) -> User:
         return self._get_user(users.c.email == email)
+
+

@@ -3,11 +3,10 @@ from src.common.result import Result
 from src.common.validators import empty_or_none_string, not_valid_email, not_int
 from src.repository.user_repository import UserRepository
 from src.domain.user import User
-from pydantic import BaseModel
 
 
-
-class CreateUserRequest(BaseModel):
+@dataclass
+class CreateUserRequest:
     fullname: str
     email: str
 

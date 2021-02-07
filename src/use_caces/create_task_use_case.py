@@ -15,17 +15,22 @@ class CreateTaskRequest:
     owner_id: int
 
     @classmethod
-    def create(cls, **kwargs):
-        if "title" not in kwargs or empty_or_none_string(kwargs["title"]):
+    def create(cls, title: str, details: str, story_points: int, owner_id: int):
+        if empty_or_none_string(title):
             return Result.failure("title is required.")
 
-        if "owner_id" not in kwargs or not_int(kwargs["owner_id"]):
+        if not_int(owner_id):
             return Result.failure("owner_id is required.")
 
-        if "story_points" not in kwargs or not_int(kwargs["story_points"]):
+        if not_int(story_points):
             return Result.failure("story_points is required.")
 
-        request = cls(**kwargs)
+        request = cls(
+            title=title,
+            details=details,
+            story_points=story_points,
+            owner_id=owner_id
+        )
         return Result.success(request)
 
 
